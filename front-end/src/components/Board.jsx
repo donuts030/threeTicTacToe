@@ -55,6 +55,8 @@ const boardPlacements = {
 
 const boardOrientations = {};
 
+const facesWithWin = {};
+
 export default function Board(props) {
   const [boardState, setBoard] = useState({
     boardPlacements: boardPlacements,
@@ -63,6 +65,7 @@ export default function Board(props) {
   const [currSlotting, setSlotting] = useState(-1);
   const group = useRef();
   const { nodes, materials } = useGLTF(Tictactoe_B);
+
   boardPlacementsControl(currSlotting, props.rotationValue)
   const allArea3D = area3DPos.map((pos, areaNum) =>{
     return(<Area3D 
@@ -95,7 +98,7 @@ function boardPlacementsControl(currSlotting, currRotation){
       if(boardPlacements[dir][i].boxNum === currSlotting && !boardPlacements[dir][i].faceValue){
         boardPlacements[dir][i]["faceValue"] = currRotation.rotation.rotationFaces[dir];
         console.log(boardPlacements);
-        checkWins();
+        checkWins(dir, i);
       }
     }
   })
@@ -106,7 +109,11 @@ function boardPlacementsControl(currSlotting, currRotation){
   }
 }
 
-function checkWins(){
+function checkWins(insertedFaceDir, insertedFaceIndex){
+
+}
+
+function loadIn(){
   
 }
 

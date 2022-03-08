@@ -26,7 +26,7 @@ export default function Area3D(props){
         rotation: rotationAngle
     }
     const state_Dice = {
-        parentType: "area2D",
+        parentType: "area3D",
         priority: priority,
     }
 
