@@ -1,0 +1,47 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  align-content: center;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.boardDisplay{
+  display: flex;
+  flex-direction: row;
+  min-height: 600px;
+  width: 100%;
+}
+
+.diceDisplay{
+  display: flex;
+  flex-direction: row;
+  min-width: 30%;
+  max-width: 30%;
+  min-height: 60vh;
+  max-height: 60vh;
+  border: 2px solid black;
+  margin: 2vw;
+}
+.playSet{
+  min-width: 50%;
+  max-width: 50%;
+  min-height: 60vh;
+  max-height: 60vh;
+  margin: 2vw;
+  border: 2px solid black;
+}
+
+.three-container{
+  border: 1px solid blue;
+  align-content: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  padding: 15px;
+  
+}
