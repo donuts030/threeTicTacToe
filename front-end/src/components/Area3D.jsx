@@ -10,8 +10,9 @@ export default function Area3D(props){
 
     const insertHandler=()=>{
         if (!slotted){
-            console.log("slotted at :" + props.areaNum, "slotted: "+slotted)
+            //console.log("slotted at :" + props.areaNum, "slotted: "+slotted)
             setSlot(true)
+            props.setSlotting(props.areaNum);
             setRotation(props.rotationValue.rotation.rotationAngle)
         }
         else{

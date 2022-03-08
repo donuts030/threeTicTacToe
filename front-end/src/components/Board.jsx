@@ -53,13 +53,26 @@ const boardPlacements = {
     {boxNum: 12},{boxNum: 13},{boxNum: 14}]
 }
 
-const boardOrientations={}
+const boardOrientations = {};
+
 export default function Board(props) {
-  
+  const [boardState, setBoard] = useState({
+    boardPlacements: boardPlacements,
+    boardOrientations: boardOrientations
+  });
+  const [currSlotting, setSlotting] = useState(-1);
   const group = useRef();
   const { nodes, materials } = useGLTF(Tictactoe_B);
+  boardPlacementsControl(currSlotting, props.rotationValue)
   const allArea3D = area3DPos.map((pos, areaNum) =>{
-    return(<Area3D key={300+areaNum} position={pos} geometry={nodes["Area3D001"].geometry} areaNum={areaNum} rotationValue={props.rotationValue} />)
+    return(<Area3D 
+      key={300+areaNum} 
+      position={pos} 
+      geometry={nodes["Area3D001"].geometry} 
+      areaNum={areaNum} 
+      rotationValue={props.rotationValue} 
+      setSlotting={setSlotting}
+      />)
   })
   return (
     <group ref={group} scale={[0.2, 0.2, 0.2]}/* {...props.props} */ dispose={null}>
@@ -72,6 +85,29 @@ export default function Board(props) {
       {allArea3D}
     </group>
   );
+}
+
+function boardPlacementsControl(currSlotting, currRotation){
+  const dirArr = Object.keys(boardPlacements);
+  
+  dirArr.map((dir)=>{
+    for(let i = 0; i < boardPlacements[dir].length; i++){
+      if(boardPlacements[dir][i].boxNum === currSlotting && !boardPlacements[dir][i].faceValue){
+        boardPlacements[dir][i]["faceValue"] = currRotation.rotation.rotationFaces[dir];
+        console.log(boardPlacements);
+        checkWins();
+      }
+    }
+  })
+  
+  if(currSlotting >= 0 && !boardOrientations[currSlotting]){
+    boardOrientations[currSlotting] = currRotation;
+    console.log(boardOrientations);
+  }
+}
+
+function checkWins(){
+  
 }
 
 useGLTF.preload(Tictactoe_B);

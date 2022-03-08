@@ -127,7 +127,7 @@ export default function DicePiece(props){
             material={materials.DicePiece_Material}
             onClick={()=>{clickHandler()}}
             >
-                <arrowHelper ref={dir} scale={10} setColor={{color: "red"}} onAfterRender={console.log()}/>
+                <arrowHelper ref={dir} scale={10} setColor={{color: "red"}} />
                 {/* <meshStandardMaterial attach="material" metalness={0}/> */}
             </mesh>
         
