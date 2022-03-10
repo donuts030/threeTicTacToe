@@ -24,7 +24,7 @@ export default function ThreeDisplay(){
     }
 
     return(
-        <div>
+        <div className="grab">
             <div className="boardDisplay">
                 
                 <Canvas className="playSet" pixelRatio={window.devicePixelRatio}>

@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const db = mongoose.connection;
 
 //.env import and configuration
-require("dotenv").config({ path: "../../.env" });
+require("dotenv").config({ path: "../.env" });
 const PORT = process.env.PORT || 4000;
 const mongoURI = process.env.MONGODB_URI;
 
@@ -17,7 +17,8 @@ const mongoURI = process.env.MONGODB_URI;
 const session = require("express-session");
 
 //import controllers
-
+const userLoginController =  require("./controllers/userLogin.controller")
+const boardDataController = require("./controllers/boardData.controller");
 
 //connect to mongoDB
 mongoose.connect(mongoURI, { useNewUrlParser: true });
@@ -43,6 +44,8 @@ app.use(
 );
 
 //route middleware
+app.use("/api/login/", userLoginController);
+app.use("/api/boarddata/", boardDataController);
 
 //for build
 app.get("/*", (req, res) => {
