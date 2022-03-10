@@ -4,7 +4,7 @@ import Board from "./Board";
 import DiceDisplay from "./DiceDisplay";
 import { Environment, OrbitControls, TransformControls, OrthographicCamera} from '@react-three/drei';
 
-export default function ThreeDisplay(){
+export default function ThreeDisplay(props){
     const initRotation = {
         rotationAngle: [0,0,0],
         rotationFaces:{
@@ -31,7 +31,7 @@ export default function ThreeDisplay(){
                         <hemisphereLight/>
                         <pointLight position={[10, 10, 10]} />
                         <Suspense fallback={null}>
-                            <Board props={{scale:[0.2, 0.2, 0.2]}} rotationValue={rotationValue}/>
+                            <Board props={{scale:[0.2, 0.2, 0.2]}} rotationValue={rotationValue} currUser={props.currUser}/>
                             <OrbitControls enableZoom = {false}/>
                         </Suspense> 
                         <gridHelper />

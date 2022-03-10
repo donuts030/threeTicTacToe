@@ -7,6 +7,7 @@ export default function Area3D(props){
     const [hover, setHover] = useState(false);
     const [slotted, setSlot] = useState(false);
     const [rotationAngle, setRotation] = useState([0,0,0]);
+    let meshColor = {}
 
     const insertHandler=()=>{
         if (!slotted){
@@ -30,6 +31,19 @@ export default function Area3D(props){
         priority: priority,
     }
 
+    if(props.highlightWin){
+        meshColor = {
+            color:"#FF6347",
+            opacity: 0.5
+        }
+    }
+    else{
+        meshColor = {
+            color:"#ffffff",
+            opacity:(hover? 0.5 : 0)
+        }
+    }
+
     return(
         <>
         <mesh
@@ -41,7 +55,7 @@ export default function Area3D(props){
         position = {props.position}
         geometry = {props.geometry}
         >
-            <meshStandardMaterial attach="material" color="#ffffff" opacity={hover? 0.5 : 0} transparent/>
+            <meshStandardMaterial attach="material" {...meshColor} transparent/>
         </mesh>
         <BoardPiece insertProps={propsForDice} varProps={state_Dice}/>
         </>

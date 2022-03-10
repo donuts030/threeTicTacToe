@@ -1,8 +1,9 @@
-import React, { useRef, useState} from "react";
+import React, { useRef, useState, useEffect} from "react";
 import { useGLTF } from "@react-three/drei";
 import Tictactoe_B from "../assets/3Dtictactoe.glb";
 import {meshStandardMaterial} from "react-three-fiber";
 import Area3D from "./Area3D";
+import axios from "axios";
 
 const area3DPos = [
   [-5, 4.91, -4.9],
@@ -54,20 +55,42 @@ const boardPlacements = {
 }
 
 const boardOrientations = {};
+let loadboardOrientations = {};
 
 const facesWithWin = {};
 
 export default function Board(props) {
+  const [signIn, setSignedIn] = useState(null);
   const [boardState, setBoard] = useState({
     boardPlacements: boardPlacements,
     boardOrientations: boardOrientations
   });
+
   const [currSlotting, setSlotting] = useState(-1);
   const group = useRef();
   const { nodes, materials } = useGLTF(Tictactoe_B);
+  //console.log(signIn.currUser);
 
-  boardPlacementsControl(currSlotting, props.rotationValue)
+  
+
+  useEffect(async()=>{
+    if(props.currUser){
+      setSignedIn({
+        currUser: props.currUser
+      })
+      const getPrevBoard = async () =>{
+        const addBoardData = await axios.get(`/api/boarddata/getdata/${props.currUser.boardId}`)
+        loadboardOrientations = addBoardData.data.data.boardOrientations;
+      }
+      getPrevBoard();
+    }
+  }, [props?.currUser?.userid])
+  
+  boardPlacementsControl(currSlotting, props.rotationValue, setBoard, props.currUser);
+
   const allArea3D = area3DPos.map((pos, areaNum) =>{
+    const highlightWin = checkAreaWins();
+    const slottedInLoad = getLoaded(signIn, areaNum, loadboardOrientations);
     return(<Area3D 
       key={300+areaNum} 
       position={pos} 
@@ -75,6 +98,8 @@ export default function Board(props) {
       areaNum={areaNum} 
       rotationValue={props.rotationValue} 
       setSlotting={setSlotting}
+      highlightWin={highlightWin}
+      slottedInLoad={slottedInLoad}
       />)
   })
   return (
@@ -90,31 +115,69 @@ export default function Board(props) {
   );
 }
 
-function boardPlacementsControl(currSlotting, currRotation){
+function boardPlacementsControl(currSlotting, currRotation, setBoard, currUser){
   const dirArr = Object.keys(boardPlacements);
   
   dirArr.map((dir)=>{
     for(let i = 0; i < boardPlacements[dir].length; i++){
       if(boardPlacements[dir][i].boxNum === currSlotting && !boardPlacements[dir][i].faceValue){
         boardPlacements[dir][i]["faceValue"] = currRotation.rotation.rotationFaces[dir];
-        console.log(boardPlacements);
         checkWins(dir, i);
       }
     }
   })
   
   if(currSlotting >= 0 && !boardOrientations[currSlotting]){
-    boardOrientations[currSlotting] = currRotation;
-    console.log(boardOrientations);
+    boardOrientations[currSlotting] = currRotation.rotation;
+    const tempArr = Object.keys(boardOrientations);
+    setBoard({
+      boardPlacements: boardPlacements,
+      boardOrientations: boardOrientations,
+    })
+    if(currUser){
+      const sendData = async ()=>{
+        console.log("added data")
+        const data = {
+          boardData: {
+            boardPlacements: boardPlacements,
+            boardOrientations: boardOrientations
+          },
+          userid: currUser.userid
+        }
+        const addBoardData = await axios.post("/api/boarddata/add", data);
+        console.log(addBoardData.data.message)
+      }
+      sendData()
+    }
   }
+
 }
 
 function checkWins(insertedFaceDir, insertedFaceIndex){
 
 }
 
-function loadIn(){
-  
+function getLoaded (signIn, areaNum, loadboardOrientations) {
+  if(signIn){
+    //console.log(loadboardOrientations);
+    if(loadboardOrientations[areaNum]){
+      return {
+        slotted: true,
+        rotation: loadboardOrientations[areaNum].rotationAngle
+      }
+    }
+  }
+  else {return null}
+
+}
+
+function checkAreaWins(){
+  if((Object.keys(facesWithWin)).length > 0){
+    //facesWithWin 
+  }
+  else{
+    return false;
+  }
 }
 
 useGLTF.preload(Tictactoe_B);

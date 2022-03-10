@@ -17,7 +17,8 @@ const mongoURI = process.env.MONGODB_URI;
 const session = require("express-session");
 
 //import controllers
-const userLoginController =  require("./controllers/userLogin.controller")
+const userController =  require("./controllers/user.controller");
+const sessionsController = require("./controllers/sessions.controller");
 const boardDataController = require("./controllers/boardData.controller");
 
 //connect to mongoDB
@@ -31,7 +32,7 @@ db.on("connected", () => console.log("mongo database connected successfully!"));
 db.on("disconnected", () => console.log("mongo database disconnected"));
 
 //app middleware
-app.use(express.static(path.join(__dirname, "../client/build")));
+app.use(express.static(path.join(__dirname, "../front-end/build")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
@@ -44,13 +45,14 @@ app.use(
 );
 
 //route middleware
-app.use("/api/login/", userLoginController);
+app.use("/api/user/", userController);
 app.use("/api/boarddata/", boardDataController);
+app.use("/api/sessions/", sessionsController);
 
 //for build
-app.get("/*", (req, res) => {
+/* app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
+}); */
 
 app.listen(PORT, () => {
   console.log("listening on port: " + PORT);
