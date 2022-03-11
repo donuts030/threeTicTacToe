@@ -1,0 +1,24 @@
+{
+  "name": "threetictactoe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd back-end && node server.js",
+    "install-client": "cd front-end && npm install",
+    "build": "cd back-end && npm run build",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build",
+    "go": "npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donuts030/threeTicTacToe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donuts030/threeTicTacToe/issues"
+  },
+  "homepage": "https://github.com/donuts030/threeTicTacToe#readme"
+}
