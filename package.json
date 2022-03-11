@@ -7,10 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cd back-end && node server.js",
     "install-client": "cd front-end && npm install",
-    "install-server": "cd front-end && npm install",
     "build": "cd back-end && npm run build",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build",
     "go": "npm run start"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "mongoose": "^6.2.4"
   },
   "repository": {
     "type": "git",
