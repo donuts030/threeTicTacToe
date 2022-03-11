@@ -50,9 +50,9 @@ app.use("/api/boarddata/", boardDataController);
 app.use("/api/sessions/", sessionsController);
 
 //for build
-/* app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-}); */
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../front-end/build", "index.html"));
+});
 
 app.listen(PORT, () => {
   console.log("listening on port: " + PORT);
