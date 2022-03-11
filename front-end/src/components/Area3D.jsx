@@ -21,6 +21,20 @@ export default function Area3D(props){
         }
     }
 
+    const loadHandler = ()=>{
+        if(!slotted){
+            setSlot(true)
+            props.setSlotting(props.areaNum);
+            setRotation(props.slottedInLoad.rotation)
+        }
+        else if (slotted && (rotationAngle[0] !== props.slottedInLoad.rotation[0])){
+            setRotation(props.slottedInLoad.rotation)
+        }
+    }
+    if(props?.slottedInLoad?.slotted){
+        loadHandler();
+    }
+
     const propsForDice = {
         visible: slotted,
         position: props.position,

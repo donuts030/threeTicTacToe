@@ -4,7 +4,7 @@ import { useGLTF } from "@react-three/drei";
 import Tictactoe_D from "../assets/3Dtictactoe_dice.glb";
 
 let rollNumX = 0;
-let rollNumZ = 0;
+let rollNumY = 0;
 console.log("rollnum X:", rollNumX);
 const diceFaces = {
     back: "x",
@@ -20,6 +20,7 @@ console.log("init diceFace:", JSON.stringify(diceFaces));
 
 export default function DicePiece(props){
     const [priority, setPriority] = useState(null);
+    const [random, setRandom] = useState(0);
     const [rolling, setRoll] = useState(false);
     const { nodes, materials } = useGLTF(Tictactoe_D);
     //console.log(nodes.DicePiece.geometry.index)
@@ -28,7 +29,12 @@ export default function DicePiece(props){
 
     useFrame(((state, delta) => { 
         if(rolling){
-            //if(rollNumX === rollNumZ){
+            if(rollNumX === 0 && rollNumY === 0){
+                mesh.current.rotation.x = 0;
+                mesh.current.rotation.y = 0;
+            }
+            //if(rollNumX === rollNumY){
+            if(random === 0){
                 console.log("dir:", dir/* .current?.children?.[1]?.rotation */);
                 mesh.current.rotation.x += (Math.PI * 0.25);
                 rollNumX += 1;
@@ -39,44 +45,46 @@ export default function DicePiece(props){
                     displaceDiceFacesX();
                     console.log("x moved object:", JSON.stringify(diceFaces));
                 }
+            }
             //}
-            /* else{
-                mesh.current.rotation.z += (Math.PI * 0.5);
-                rollNumZ += 1;
-                console.log("rollnum Z:", rollNumZ);
-                displaceDiceFacesZ()
-                console.log("Z moved object:", JSON.stringify(diceFaces))
-                if(rollNumZ !== 0 && rollNumZ % 2 === 0){
-                    displaceDiceFacesZ();
-                    console.log("Z moved object:", JSON.stringify(diceFaces));
+            else if(random === 1){
+                mesh.current.rotation.y += (Math.PI * 0.25);
+                rollNumY += 1;
+                console.log("rollnum Y:", rollNumY);
+                displaceDiceFacesY()
+                console.log("Y moved object:", JSON.stringify(diceFaces))
+                if(rollNumY !== 0 && rollNumY % 2 === 0){
+                    displaceDiceFacesY();
+                    console.log("Y moved object:", JSON.stringify(diceFaces));
                 } 
-            } */
+            }
             
         }
-        else if(!rolling && (rollNumX % 2 !== 0 /* || rollNumZ % 2 !== 0 */)){
-            console.log("stopping rollnum X:%d Z:%d", rollNumX, rollNumZ);
-/*             if(rollNumX !== rollNumZ ){
-                mesh.current.rotation.z += (Math.PI * 0.5);
+        else if(!rolling && (rollNumX % 2 !== 0 || rollNumY % 2 !== 0)){
+            console.log("stopping rollnum X:%d Y:%d", rollNumX, rollNumY);
+/*             if(rollNumX !== rollNumY ){
+                mesh.current.rotation.y += (Math.PI * 0.5);
                 rollNumZ += 1;
-                console.log("rollnum Z:", rollNumZ);
-                displaceDiceFacesZ();
-                console.log("Z moved object last:",JSON.stringify(diceFaces));
+                console.log("rollnum Y:", rollNumY);
+                displaceDiceFacesY();
+                console.log("y moved object last:",JSON.stringify(diceFaces));
             }
             else */
-            //if(rollNumX % 2 !== 0){
+            if(rollNumX % 2 !== 0){
+
                 mesh.current.rotation.x += (Math.PI * 0.25);
                 rollNumX += 1;
                 console.log("rollnum X:", rollNumX);
                 displaceDiceFacesX();
                 console.log("x moved object last:", JSON.stringify(diceFaces))
-            //}
-/*             else if(rollNumZ % 2 !== 0){
-                mesh.current.rotation.z += (Math.PI * 0.25);
-                rollNumZ += 1;
-                console.log("rollnum Z:", rollNumZ);
-                displaceDiceFacesZ();
-                console.log("Z moved object last:",JSON.stringify(diceFaces));
-            } */
+            }
+            else if(rollNumY % 2 !== 0){
+                mesh.current.rotation.y += (Math.PI * 0.25);
+                rollNumY += 1;
+                console.log("rollnum Y:", rollNumY);
+                displaceDiceFacesY();
+                console.log("Y moved object last:",JSON.stringify(diceFaces));
+            }
             const rotationValue={
                 rotationAngle: [mesh.current.rotation.x,
                     mesh.current.rotation.y,
@@ -107,8 +115,10 @@ export default function DicePiece(props){
                     front: "o",
                     bottom : "x"
                 }
-                rollNumZ = 0;
+                rollNumY = 0;
                 rollNumX = 0;
+                const randomNum = Math.round(Math.random())
+                setRandom(randomNum);
                 setRoll(true)
             }
             else{
@@ -142,13 +152,13 @@ function displaceDiceFacesX(){
     diceFaces.bottom = tempFront;
 }
 
-function displaceDiceFacesZ(){
+function displaceDiceFacesY(){
     const tempLeft = diceFaces.left;
 
-    diceFaces.left = diceFaces.top;
-    diceFaces.top = diceFaces.right;
-    diceFaces.right = diceFaces.bottom;
-    diceFaces.bottom = tempLeft;
+    diceFaces.left = diceFaces.front;
+    diceFaces.front = diceFaces.right;
+    diceFaces.right = diceFaces.back;
+    diceFaces.back = tempLeft;
 
 }
 

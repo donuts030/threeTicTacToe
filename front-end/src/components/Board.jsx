@@ -80,7 +80,8 @@ export default function Board(props) {
       })
       const getPrevBoard = async () =>{
         const addBoardData = await axios.get(`/api/boarddata/getdata/${props.currUser.boardId}`)
-        loadboardOrientations = addBoardData.data.data.boardOrientations;
+        //console.log(addBoardData.data);
+        if(addBoardData.data){loadboardOrientations = addBoardData.data.data.boardOrientations};
       }
       getPrevBoard();
     }
@@ -89,7 +90,7 @@ export default function Board(props) {
   boardPlacementsControl(currSlotting, props.rotationValue, setBoard, props.currUser);
 
   const allArea3D = area3DPos.map((pos, areaNum) =>{
-    const highlightWin = checkAreaWins();
+    const highlightWin = checkAreaWins(areaNum);
     const slottedInLoad = getLoaded(signIn, areaNum, loadboardOrientations);
     return(<Area3D 
       key={300+areaNum} 
@@ -129,7 +130,7 @@ function boardPlacementsControl(currSlotting, currRotation, setBoard, currUser){
   
   if(currSlotting >= 0 && !boardOrientations[currSlotting]){
     boardOrientations[currSlotting] = currRotation.rotation;
-    const tempArr = Object.keys(boardOrientations);
+    //const tempArr = Object.keys(boardOrientations);
     setBoard({
       boardPlacements: boardPlacements,
       boardOrientations: boardOrientations,
@@ -145,7 +146,7 @@ function boardPlacementsControl(currSlotting, currRotation, setBoard, currUser){
           userid: currUser.userid
         }
         const addBoardData = await axios.post("/api/boarddata/add", data);
-        console.log(addBoardData.data.message)
+        //console.log(addBoardData.data.message)
       }
       sendData()
     }
@@ -154,30 +155,73 @@ function boardPlacementsControl(currSlotting, currRotation, setBoard, currUser){
 }
 
 function checkWins(insertedFaceDir, insertedFaceIndex){
+  //let numOfSlotted = 0;
+  const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  console.log(insertedFaceDir, insertedFaceIndex);
+/*   boardPlacements[insertedFaceDir].map((element, index)=>{
+    if(element.faceValue){
+      numOfSlotted += 1;
+    }
+  })
 
+  if(numOfSlotted < 3){
+    console.log("less than 3 in one face");
+    return;
+  }
+  else{ */
+    for( let i = 0; i < 8; i++){
+      const a = boardPlacements[insertedFaceDir][winningConditions[i][0]];
+      const b = boardPlacements[insertedFaceDir][winningConditions[i][1]];
+      const c = boardPlacements[insertedFaceDir][winningConditions[i][2]];
+
+      
+      if (a.faceValue && b.faceValue && c.faceValue){
+        if (a?.faceValue === b?.faceValue && b?.faceValue === c?.faceValue) {
+          facesWithWin[insertedFaceDir] = [a.boxNum, b.boxNum, c.boxNum];
+          console.log("faces:", facesWithWin);
+          return;
+        }
+      }
+    }
+/*     console.log("more than 3 yay");
+  } */
 }
 
 function getLoaded (signIn, areaNum, loadboardOrientations) {
   if(signIn){
-    //console.log(loadboardOrientations);
-    if(loadboardOrientations[areaNum]){
+    if(loadboardOrientations[areaNum.toString()]){
       return {
         slotted: true,
-        rotation: loadboardOrientations[areaNum].rotationAngle
+        rotation: loadboardOrientations[areaNum.toString()].rotationAngle
       }
     }
   }
-  else {return null}
+  else {return {slotted:false}}
 
 }
 
-function checkAreaWins(){
+function checkAreaWins(areaNum){
+  let win = false;
+  //console.log((Object.keys(facesWithWin)).length);
   if((Object.keys(facesWithWin)).length > 0){
-    //facesWithWin 
+    for(const element in facesWithWin){
+      for (let i = 0; i< element.length; i++){
+        if(areaNum === facesWithWin[element][i]){
+          win = true;
+        }
+      }
+    }
   }
-  else{
-    return false;
-  }
+  return win;
 }
 
 useGLTF.preload(Tictactoe_B);
